@@ -36,7 +36,7 @@ final class Factory
 		}
 		$class->setImplements($ifaces);
 
-		$class->setComment(Helpers::unformatDocComment((string) $from->getDocComment()));
+		$class->setComment(Formatter::unformatDocComment((string) $from->getDocComment()));
 		if ($from->getParentClass()) {
 			$class->setExtends($from->getParentClass()->getName());
 			$class->setImplements(array_diff($class->getImplements(), $from->getParentClass()->getInterfaceNames()));
@@ -74,7 +74,7 @@ final class Factory
 		$method->setBody($from->isAbstract() ? null : '');
 		$method->setReturnReference($from->returnsReference());
 		$method->setVariadic($from->isVariadic());
-		$method->setComment(Helpers::unformatDocComment((string) $from->getDocComment()));
+		$method->setComment(Formatter::unformatDocComment((string) $from->getDocComment()));
 		if ($from->hasReturnType()) {
 			$method->setReturnType((string) $from->getReturnType());
 			$method->setReturnNullable($from->getReturnType()->allowsNull());
@@ -93,7 +93,7 @@ final class Factory
 		$function->setReturnReference($from->returnsReference());
 		$function->setVariadic($from->isVariadic());
 		if (!$from->isClosure()) {
-			$function->setComment(Helpers::unformatDocComment((string) $from->getDocComment()));
+			$function->setComment(Formatter::unformatDocComment((string) $from->getDocComment()));
 		}
 		if ($from->hasReturnType()) {
 			$function->setReturnType((string) $from->getReturnType());
@@ -128,7 +128,7 @@ final class Factory
 			? ClassType::VISIBILITY_PRIVATE
 			: ($from->isProtected() ? ClassType::VISIBILITY_PROTECTED : ClassType::VISIBILITY_PUBLIC)
 		);
-		$prop->setComment(Helpers::unformatDocComment((string) $from->getDocComment()));
+		$prop->setComment(Formatter::unformatDocComment((string) $from->getDocComment()));
 		return $prop;
 	}
 }

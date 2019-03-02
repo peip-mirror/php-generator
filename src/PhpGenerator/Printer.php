@@ -32,7 +32,7 @@ class Printer
 
 	public function printFunction(GlobalFunction $function, PhpNamespace $namespace = null): string
 	{
-		return Helpers::formatDocComment($function->getComment() . "\n")
+		return Formatter::formatDocComment($function->getComment() . "\n")
 			. 'function '
 			. ($function->getReturnReference() ? '&' : '')
 			. $function->getName()
@@ -48,7 +48,7 @@ class Printer
 		foreach ($closure->getUses() as $param) {
 			$uses[] = ($param->isReference() ? '&' : '') . '$' . $param->getName();
 		}
-		$useStr = strlen($tmp = implode(', ', $uses)) > Helpers::WRAP_LENGTH && count($uses) > 1
+		$useStr = strlen($tmp = implode(', ', $uses)) > Formatter::WRAP_LENGTH && count($uses) > 1
 			? "\n" . $this->indentation . implode(",\n" . $this->indentation, $uses) . "\n"
 			: $tmp;
 
@@ -64,7 +64,7 @@ class Printer
 	public function printMethod(Method $method, PhpNamespace $namespace = null): string
 	{
 		$method->validate();
-		return Helpers::formatDocComment($method->getComment() . "\n")
+		return Formatter::formatDocComment($method->getComment() . "\n")
 			. ($method->isAbstract() ? 'abstract ' : '')
 			. ($method->isFinal() ? 'final ' : '')
 			. ($method->getVisibility() ? $method->getVisibility() . ' ' : '')
@@ -96,16 +96,16 @@ class Printer
 
 		$consts = [];
 		foreach ($class->getConstants() as $const) {
-			$consts[] = Helpers::formatDocComment((string) $const->getComment())
+			$consts[] = Formatter::formatDocComment((string) $const->getComment())
 				. ($const->getVisibility() ? $const->getVisibility() . ' ' : '')
-				. 'const ' . $const->getName() . ' = ' . Helpers::dump($const->getValue()) . ";\n";
+				. 'const ' . $const->getName() . ' = ' . Formatter::dump($const->getValue()) . ";\n";
 		}
 
 		$properties = [];
 		foreach ($class->getProperties() as $property) {
-			$properties[] = Helpers::formatDocComment((string) $property->getComment())
+			$properties[] = Formatter::formatDocComment((string) $property->getComment())
 				. ($property->getVisibility() ?: 'public') . ($property->isStatic() ? ' static' : '') . ' $' . $property->getName()
-				. ($property->getValue() === null ? '' : ' = ' . Helpers::dump($property->getValue()))
+				. ($property->getValue() === null ? '' : ' = ' . Formatter::dump($property->getValue()))
 				. ";\n";
 		}
 
@@ -123,7 +123,7 @@ class Printer
 		]);
 
 		return Strings::normalize(
-			Helpers::formatDocComment($class->getComment() . "\n")
+			Formatter::formatDocComment($class->getComment() . "\n")
 			. ($class->isAbstract() ? 'abstract ' : '')
 			. ($class->isFinal() ? 'final ' : '')
 			. ($class->getName() ? $class->getType() . ' ' . $class->getName() . ' ' : '')
@@ -180,7 +180,7 @@ class Printer
 
 		return Strings::normalize(
 			"<?php\n"
-			. ($file->getComment() ? "\n" . Helpers::formatDocComment($file->getComment() . "\n") : '')
+			. ($file->getComment() ? "\n" . Formatter::formatDocComment($file->getComment() . "\n") : '')
 			. "\n"
 			. ($file->getStrictTypes() ? "declare(strict_types=1);\n\n" : '')
 			. implode("\n\n", $namespaces)
@@ -218,10 +218,10 @@ class Printer
 				. ($param->isReference() ? '&' : '')
 				. ($variadic ? '...' : '')
 				. '$' . $param->getName()
-				. ($param->hasDefaultValue() && !$variadic ? ' = ' . Helpers::dump($param->getDefaultValue()) : '');
+				. ($param->hasDefaultValue() && !$variadic ? ' = ' . Formatter::dump($param->getDefaultValue()) : '');
 		}
 
-		return strlen($tmp = implode(', ', $params)) > Helpers::WRAP_LENGTH && count($params) > 1
+		return strlen($tmp = implode(', ', $params)) > Formatter::WRAP_LENGTH && count($params) > 1
 			? "(\n" . $this->indentation . implode(",\n" . $this->indentation, $params) . "\n)"
 			: "($tmp)";
 	}
